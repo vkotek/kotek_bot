@@ -5,8 +5,6 @@ import requests, json, time, urllib
 import configparser
 import random
 
-# import features.toilet_finder as toilet_finder
-# import features.image_caption as image_caption
 from features import image_caption, toilet_finder, dictionary
 
 config = configparser.RawConfigParser()
