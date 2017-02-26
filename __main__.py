@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import requests, json, time, urllib
-import features.toilet_finder
-import features.image_captions
 import configparser
 import random
+
+# import features.toilet_finder as toilet_finder
+# import features.image_caption as image_caption
+from features import image_caption, toilet_finder, dictionary
 
 config = configparser.RawConfigParser()
 config.read('config.ini')
@@ -17,6 +19,13 @@ response_what = config.get('Responses','what')
 TOKEN = config.get('General','telegram_token')
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
+# Image caption bot setup
+OCP_KEY = config.get('General','ocp_key')
+caption = image_caption.caption(OCP_KEY)
+
+# Dictionary setup
+yandex_url = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key={}&lang={}&text={}'
+dct = dictionary.dictionary( yandex_url, config.get('General','yandex_key'))
 
 
 def getURL(url):
@@ -91,26 +100,33 @@ def echo_all(updates):
             msg = None
         print("{}: {}".format(chat, text))
 
+        # If message is text, check commands..
         if msg == 'text':
-            if text[:3] == "/wc":
+            cmd = text.split()
+            if cmd[0] == "/wc":
                 data = toilet_finder.find(text[3:])
                 if data:
                     text = data[0]
                     coords = data[1]
                     send_location(chat, coords)
-            elif text[:3] == "/fu":
+            elif cmd[0] == "/fu":
                 text = reply_insult()
-            elif text[:3] == "/ha":
+            elif cmd[0] == "/ha":
                 text = reply_joke()
-            elif text[:1] == "/":
+            elif cmd[0] == "/define":
+                if len(cmd) <= 1:
+                    text = "No words to translate"
+                else:
+                    text = dct.parse(cmd[1:])
+            elif cmd[0] == "/":
                 text = reply_what()
             else:
                 text = ""
+
         elif msg == 'photo':
             file_path = get_file_path(text)
             file_url = get_file(file_path)
-            print(file_url)
-            text = image_caption.description(file_url)
+            text = "Is it {}?".format(caption.describe(file_url))
 
         send_response(chat, "{}".format(text))
 
@@ -137,7 +153,6 @@ def image():
 
 def main():
     last_update_id = None
-    fuck_off()
     while True:
         updates = get_updates(last_update_id)
         if len(updates) > 0:
