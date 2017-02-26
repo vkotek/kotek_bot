@@ -28,18 +28,15 @@ class dictionary(object):
     def parse(self, params):
         if params[0] in self.legal_translations:
             print(params)
-            response = self.get(params[1], params[0])
-            print(params)
-            text = []
-            for word in response[0]['tr']:
-                text.append(word['text'])
-            return ', '.join(text)
-            # return json.dumps(response,
-            #     sort_keys=True,
-            #     indent=2,
-            #     separators=(',', ': '),
-            #     ensure_ascii=False
-            # )
+            try:
+                response = self.get(params[1], params[0])
+                print(params)
+                text = []
+                for word in response[0]['tr']:
+                    text.append(word['text'])
+                return ', '.join(text)
+            except:
+                return 'No definition found.'
 
 if __name__ == "__main__":
     d = dictionary("config.ini")
