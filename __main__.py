@@ -100,6 +100,8 @@ def echo_all(updates):
 
         # If message is text, check commands..
         if msg == 'text':
+            if not text:
+                break
             cmd = text.split()
             if cmd[0] == "/wc":
                 data = toilet_finder.find(text[3:])
