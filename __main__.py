@@ -21,7 +21,7 @@ URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 OCP_KEY = config.get('General','ocp_key')
 caption = image_caption.caption(OCP_KEY)
 
-# Dictionary setup
+# Yandex dictionary setup
 yandex_url = 'https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key={}&lang={}&text={}'
 dct = dictionary.dictionary( yandex_url, config.get('General','yandex_key'))
 

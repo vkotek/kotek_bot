@@ -5,7 +5,7 @@ from urllib import parse, request
 
 class dictionary(object):
 
-    legal_translations = ['en-ru', 'ru-en', 'en-en']
+    legal_translations = ['en-ru', 'ru-en', 'en-en', 'ru-ru']
 
     # Initialize function, get config from file
     def __init__(self, api_url, api_key):
@@ -26,17 +26,22 @@ class dictionary(object):
             return error
 
     def parse(self, params):
-        if params[0] in self.legal_translations:
+        if params[0] not in self.legal_translations:
+            pass
+        print(params)
+        try:
+            response = self.get(params[1], params[0])
             print(params)
-            try:
-                response = self.get(params[1], params[0])
-                print(params)
-                text = []
-                for word in response[0]['tr']:
+            text = []
+            item = []
+            for df in response:
+                item.append[df['text']]
+                for word in df['tr']:
                     text.append(word['text'])
-                return ', '.join(text)
-            except:
-                return 'No definition found.'
+                text.append('\n')
+            return ', '.join(text)
+        except:
+            return 'No definition found.'
 
 if __name__ == "__main__":
     d = dictionary("config.ini")
