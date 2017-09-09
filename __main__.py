@@ -51,6 +51,7 @@ def get_updates(offset=None):
     if offset:
         url = url + "?offset={}".format(offset)
     data = getURL(url)
+    print(data)
     dataJSON = json.loads(data)
     d = dataJSON['result']
     return d
